@@ -58,13 +58,13 @@ class Player extends Sprite {
 
     this.updateCamerabox();
 
-    c.fillStyle = "rgba(0,0,255,0.2)";
-    c.fillRect(
-      this.camerabox.position.x,
-      this.camerabox.position.y,
-      this.camerabox.width,
-      this.camerabox.height
-    );
+    // c.fillStyle = "rgba(0,0,255,0.2)";
+    // c.fillRect(
+    //   this.camerabox.position.x,
+    //   this.camerabox.position.y,
+    //   this.camerabox.width,
+    //   this.camerabox.height
+    // );
 
     //draws out image
     // c.fillStyle = "rgba(0,255,0,0.2)";
@@ -120,6 +120,15 @@ class Player extends Sprite {
     }
   }
 
+  // checkforVerticlCanvasCollision() {
+  //   if (
+  //     this.hitbox.position.y + this.hitbox.height + this.velocity.y >=
+  //     canvas.height
+  //   ) {
+  //     this.velocity.y = 0;
+  //   }
+  // }
+
   shouldPanCameraToTheLeft({ canvas, camera }) {
     const cameraboxRightSide = this.camerabox.position.x + this.camerabox.width;
     const scaledDownCanvasWidth = canvas.width / 4;
@@ -139,6 +148,31 @@ class Player extends Sprite {
 
     if (this.camerabox.position.x <= Math.abs(camera.position.x)) {
       camera.position.x -= this.velocity.x;
+    }
+  }
+
+  shouldPanCameraDown({ canvas, camera }) {
+    if (this.camerabox.position.y + this.velocity.y <= 0) return;
+
+    if (this.camerabox.position.y <= Math.abs(camera.position.y)) {
+      camera.position.y -= this.velocity.y;
+    }
+  }
+
+  shouldPanCameraUp({ canvas, camera }) {
+    if (
+      this.camerabox.position.y + this.camerabox.height + this.velocity.y >=
+      432
+    )
+      return;
+
+    const scaledCanvasHeight = canvas.height / 4;
+
+    if (
+      this.camerabox.position.y + this.camerabox.height >=
+      Math.abs(camera.position.y) + scaledCanvasHeight
+    ) {
+      camera.position.y -= this.velocity.y;
     }
   }
 
