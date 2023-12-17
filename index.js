@@ -36,28 +36,30 @@ for (let i = 0; i < platformCollisions.length; i += 36) {
   platformCollisions2D.push(platformCollisions.slice(i, i + 36));
 }
 
-const platformCollisionBLocks = [];
+const platformCollisionBlocks = [];
 platformCollisions2D.forEach((row, y) => {
   row.forEach((symbol, x) => {
     if (symbol === 202) {
       //draw a block
-      platformCollisionBLocks.push(
+      platformCollisionBlocks.push(
         new CollisionBlock({
           position: {
             x: x * 16,
             y: y * 16,
           },
+          height: 4,
         })
       );
     }
   });
 });
 
-const gravity = 0.5;
+const gravity = 0.1;
 
 const player = new Player({
   position: { x: 100, y: 300 },
   collisionBlocks,
+  platformCollisionBlocks: platformCollisionBlocks,
   imageSrc: "./img/warrior/Idle.png",
   frameRate: 8,
   animations: {
@@ -120,6 +122,13 @@ const background = new Sprite({
   imageSrc: "./img/background.png",
 });
 
+const camera = {
+  position: {
+    x: 0,
+    y: 0,
+  },
+};
+
 function animate() {
   window.requestAnimationFrame(animate);
   c.fillStyle = "white";
@@ -127,12 +136,15 @@ function animate() {
 
   c.save();
   c.scale(4, 4);
-  c.translate(0, -background.image.height + sclaedCanvas.height);
+  c.translate(
+    camera.position.x,
+    -background.image.height + sclaedCanvas.height
+  );
   background.update();
   collisionBlocks.forEach((collisionBlock) => {
     collisionBlock.update();
   });
-  platformCollisionBLocks.forEach((block) => {
+  platformCollisionBlocks.forEach((block) => {
     block.update();
   });
 
@@ -143,10 +155,12 @@ function animate() {
     player.switchSprite("Run");
     player.velocity.x = 2;
     player.lastDirection = "right";
+    player.shouldPanCameraToTheLeft({ canvas, camera });
   } else if (keys.a.pressed) {
     player.switchSprite("RunLeft");
     player.velocity.x = -2;
     player.lastDirection = "left";
+    player.shouldPanCameraToTheRight({ canvas, camera });
   } else if (player.velocity.y === 0) {
     if (player.lastDirection === "right") player.switchSprite("Idle");
     else player.switchSprite("IdleLeft");
@@ -175,7 +189,7 @@ window.addEventListener("keydown", (event) => {
       keys.a.pressed = true;
       break;
     case "w":
-      player.velocity.y = -8;
+      player.velocity.y = -3;
       break;
   }
 });
