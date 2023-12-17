@@ -148,6 +148,7 @@ function animate() {
     block.update();
   });
 
+  player.checkforHorizontalCanvasCollision();
   player.update();
 
   player.velocity.x = 0;
