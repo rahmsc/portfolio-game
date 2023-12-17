@@ -58,6 +58,8 @@ const gravity = 0.5;
 const player = new Player({
   position: { x: 100, y: 0 },
   collisionBlocks,
+  imageSrc: "./img/warrior/Idle.png",
+  frameRate: 8,
 });
 
 const keys = {
